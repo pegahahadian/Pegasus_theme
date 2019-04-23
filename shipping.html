@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{store.name}} | ارسال سفارشات{% endblock %}
+
+{% block content %}
+
+<!-- Content section -->    
+    <section class="main" style="font-family:byekan;color: rgb(104,104,104);">
+        <!-- Shipping-Address -->
+        <section class="shipping-address">
+            <div class="container">
+                <div class="row">
+                    {% if error %}
+                    <div class="col-sm-12">
+                        <div class="errors">
+                            <p class="alert alert-danger"> {{_(error)}} </p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="col-sm-12">
+                        <!-- Shipping -->
+                        <div class="shipping" id="checkout-content">
+                            <form method="post">
+                                <div class="box">
+                                    <br>
+                                    <div class="hgroup-title">
+                                        <h3 style="color:rgb(0, 0, 0);">اطلاعات ارسال</h3>
+                                        <h5>روش ارسال را انتخاب و آدرس را اضافه و یا انتخاب کنید.</h5>
+                                    </div>
+                                    <div class="box-content">
+                                        <div class="address-options">
+                                            <div class="item-address">
+                                                <div class="table-responsive">
+                                                    {% for address in addresses %}
+                                                    <table class="table table-bordered">
+                                                        <tr>
+                                                            <td class="address-checkbox" rowspan="4">
+                                                                <input type="radio" id="shipping{{forloop.Counter}}" name="shipping_address_id" value="{{address.id}}">
+                                                                <label for="shipping{{forloop.Counter}}"></label>
+                                                            </td>
+                                                            <td class="customer-name" colspan="2">
+                                                                <h6 class="col-md-10">{{address.receiver_name}}</h6>
+                                                                <span class="col-md-2 address-buttons">
+                                                                    <a class="delete-address shipping-table-btn" href="/customer/address/{{address.id}}/delete?next=/order/shipping" style="color:#333;"><i class="fa fa-trash"></i></a>
+                                                                    <a class="address-edit shipping-table-btn" href="/customer/address/{{address.id}}/edit?next=/order/shipping" style="color:#333;"><i class="fa fa-pencil"></i></a>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <span>استان: </span>
+                                                                <span>{{address.state}}</span>
+                                                            </td>
+                                                            <td>
+                                                                <span>شهر: </span>
+                                                                <span>{{address.city}}</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <span>کد پستی: </span>
+                                                                <span>{{address.postal_code}}</span>
+                                                            </td>
+                                                            <td>
+                                                                <span>شماره تماس: </span>
+                                                                <span>{{address.call}}</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <span>آدرس: </span>
+                                                                <span>{{address.address}}</span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="buttons">
+                                                <a href="/customer/address/add?next=/order/shipping" class="btn btn-primary second-btn">اضافه کردن آدرس جدید</a>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="shipping-methods">
+                                            <div class="row">
+                                                {% for method in store.delivery_methods %}
+                                                <div class="col-sm-4">
+                                                    <div class="box highlight">
+                                                        <div class="hgroup-title">
+                                                            <h3>{{_(method)}}</h3>
+                                                        </div>
+                                                        <div class="box-content highlight clearfix">
+                                                            <div class="price pull-left">
+                                                                <strong>{{_(method)}}</strong>
+                                                            </div>
+                                                            <input id="send{{forloop.Counter}}" name="send_way_name" type="radio" value="{{method}}" class="pull-right">
+                                                        </div>          
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <br>
+                                    <div class="buttons">
+                                        <a href="/order/basket" class="btn btn-primary second-btn">بازگشت </a>
+                                        <button type="submit" class="btn btn-default first-btn general-btn">تایید</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <br>
+                        </div>
+                        <!-- End class="Shipping" -->                                
+                    </div> 
+                </div>
+            </div>
+        </section>                
+        <!-- Shipping-Address -->            
+    </section>
+<!-- End class="main" -->
+
+{% endblock %}
+
+{% block custom_footer %}
+    <script type="text/javascript" src="{{static}}js/ordering.js"></script>
+{% endblock %} 
+
+
+

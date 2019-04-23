@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+    {% if path == "/report" || path == "/report/submit" %}
+         {{store.name}} | ثبت شکایات
+    {% else %}
+        {{store.name}} | تماس با ما
+    {% endif %}
+{% endblock %}
+
+{% block custom_header %}
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- Content section -->    
+    <section class="main" style="font-family:byekan;">
+        <!-- Contact-Us -->
+        <section class="contact-us">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="box">
+                            <div class="hgroup-title">
+                                {% if path == "/report" || path == "/report/submit" %}
+                                <h3>ثبت شکایات</h3>
+                                {% else %}
+                                <h3>تماس با ما</h3>
+                                {% endif %}
+                                <h5>نام فروشگاه: {{store.domain}}</h5>
+                            </div>
+                            <div class="box-content">
+                                <div class="row">
+                                    {% if store.address %}
+                                    <div class="col-sm-4">
+                                        <div class="contact-box">
+                                            <h5>
+                                                <em class="fa fa-map-marker "></em>
+                                                آدرس
+                                            </h5>
+                                            <p>{{store.view_address}}</p>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if store.phone %}
+                                    <div class="col-sm-4">
+                                        <div class="contact-box">
+                                            <h5>
+                                                <em class="fa fa-phone "></em>
+                                                تلفن
+                                            </h5>
+                                            <p>{{store.phone}}</p>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if store.description %}
+                                    <div class="col-sm-4">
+                                        <div class="contact-box">
+                                            <h5>
+                                                <em class="fa fa-file-text-o"></em>
+                                                توضیحات
+                                            </h5>
+                                            <p>{{store.description|safe}}</p>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+                                        <div class="box">
+                                            {% if  path == "/report" || path == "/report/submit" %}
+                                            <form class="contact-us-form" method="post" action="/report/submit">
+                                                <h3  style="color:black;">فرم شکایات</h3>
+                                                <hr>
+                                                <div class="row">
+                                                    {% if error %}
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <p class="alert alert-danger">{{_(error)}}</p>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if msg %}
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <p class="alert alert-success">{{_(msg)}}</p>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <select name="section" class="form-control">
+                                                                <option value="" disabled="" selected="" hidden="">بخش مورد نظر</option>
+                                                                {% for key, name in store.contact_sections %}
+                                                                <option value="{{key}}">
+                                                                    {{name}}
+                                                                </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="name" class="control-label">نام</label>
+                                                            <div class="controls">
+                                                                <input name="name" class="form-control" type="text" value="{{user.full_name}}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="mail" class="control-label">ایمیل</label>
+                                                            <div class="controls">
+                                                                <input name="email" class="form-control" type="email" value="{{user.email}}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label for="subject" class="control-label">موضوع</label>
+                                                            <div class="controls">
+                                                                <input name="subject" class="form-control" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label for="textarea" class="control-label">متن شکایت</label>
+                                                            <div class="controls">
+                                                                <textarea id="textarea" name="text" class="form-control"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        {% if contact_captcha_required %}
+                                                        <div class="g-recaptcha" data-sitekey="{{captcha_key}}"></div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="buttons">
+                                                            <button class="btn btn-default general-btn" type="submit">
+                                                                ارسال <i class="fa fa-paper-plane"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            {% else %}
+                                            <form class="contact-us-form" method="post" action="/contact/submit">
+                                                <h3 style="color:black;" >فرم تماس</h3>
+                                                <hr>
+                                                <div class="row">
+                                                    {% if error %}
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <p class="alert alert-danger">{{_(error)}}</p>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if msg %}
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <p class="alert alert-success">{{_(msg)}}</p>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <select name="section" class="form-control">
+                                                                <option value="" disabled="" selected="" hidden="">بخش مورد نظر</option>
+                                                                {% for key, name in store.contact_sections %}
+                                                                <option value="{{key}}">
+                                                                    {{name}}
+                                                                </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="name" class="control-label">نام</label>
+                                                            <div class="controls">
+                                                                <input name="name" class="form-control" type="text" value="{{user.full_name}}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="mail" class="control-label">ایمیل</label>
+                                                            <div class="controls">
+                                                                <input name="email" class="form-control" type="email" value="{{user.email}}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label for="subject" class="control-label">موضوع</label>
+                                                            <div class="controls">
+                                                                <input name="subject" class="form-control" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label for="textarea" class="control-label">متن پیام</label>
+                                                            <div class="controls">
+                                                                <textarea id="textarea" name="text" class="form-control"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        {% if contact_captcha_required %}
+                                                        <div class="g-recaptcha" data-sitekey="{{captcha_key}}"></div>
+                                                        {% endif %}
+                                                    </div>
+                                                <br>
+                                                    <div class="col-sm-12">
+                                                        <div class="buttons">
+                                                            <button class="btn btn-default general-btn" type="submit">
+                                                                ارسال پیام <i class="fa fa-paper-plane"></i>
+                                                            </button>
+                                                        </div>
+                                                        <br>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                            
+                    </div> 
+                </div>
+            </div>
+        </section>                
+        <!-- End Contact-Us -->            
+    </section>
+<!-- End class="main" -->
+
+{% endblock %}
+

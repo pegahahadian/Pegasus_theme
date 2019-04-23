@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+    {{store.name}} | {{content.title}}
+{% endblock %}
+
+{% block custom_header %}
+<link rel="stylesheet" href="{{static}}vendor/lightslider-master/src/css/lightslider.css" /> 
+{% endblock %}
+
+{% block content %}
+
+<!-- Content section -->    
+    <section class="main" style="font-family:byekan;">
+        <!-- Content -->
+        <section class="blog_post">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="box">
+                            <div class="hgroup-title">
+                                <h3>{{ content.title }}</h3>
+                                <h4 class="blog-date">
+                                    <i class="fa fa-calendar"></i>
+                                    <span id="content-date">{{content.created_at}}</span>
+                                </h4>
+                            </div>
+                            <div class="box-content">
+                                <p class="first-body">{{content.first_body|safe}}</p>
+                                <div class="blog-slider">
+                                    <div class="item">            
+                                        <div class="clearfix" style="max-width:100%;">
+                                            <ul id="image-gallery" class="gallery list-unstyled cS-hidden">
+                                                {% for img in content.images %}
+                                                <li data-thumb="{{img}}"> 
+                                                    <img src="{{img}}" />
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="content-body">{{content.body|safe}}</div>
+                            </div>
+                        </div>                            
+                    </div> 
+                </div>
+            </div>
+        </section>                
+        <!-- End Content -->            
+    </section>
+<!-- End class="main" -->
+
+{% endblock %}
+
+{% block custom_footer %}
+<script type="text/javascript" src="{{static}}vendor/lightslider-master/src/js/lightslider.js"></script>
+<script type="text/javascript" src="{{static}}js/content.js"></script>
+<script type="text/javascript" src="{{static}}vendor/DateConvertor/date-convertor.js"></script> 
+{% endblock %}

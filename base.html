@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{% block page_title %}{{store.name}}{% endblock %}</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% if store.meta_keyword %}
+    <meta name="keywords" content="{{store.meta_keyword}}">
+    {% endif %}
+    {% if store.meta_desc %}
+    <meta name="description" content="{% if store.description %}{{store.meta_desc}}{% else %}{{store.name}}{% endif %}">
+    {% endif %}
+    {% if store.enamad_meta_id %}
+    <meta name="enamad" content="{{store.enamad_meta_id}}">
+    {% endif %}
+    {% if store.google_analytics %}
+    <meta name="google-site-verification" content="{{store.google_analytics}}">
+    {% endif %}
+    {% for meta_tag in store.custom_meta_tags %}
+    <meta name="{{meta_tag.name}}" content="{{meta_tag.content}}" />
+    {% endfor %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="{{static}}js/jquery.js"></script>
+    <script src="{{static}}js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="{{static}}css/reset.css">
+    <link rel="stylesheet" href="{{static}}css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="{{static}}css/font-awesome.min.css" />
+    <link rel="stylesheet" href="{{static}}css/2.css" />
+    <link rel="stylesheet" href="{{static}}css/style-icomoon.css" />
+    {% if store.has_favicon %}
+    <link rel="icon" href="{{store.favicon}}" />
+    {% endif %}
+    {% block custom_header %}{% endblock %}
+
+    {% if store.theme_css %}
+    <link rel="stylesheet" type="text/css" href="{{static}}css/color-schemes/{{store.theme_css}}" media="all"
+        id="color_scheme">
+    {% else %}
+    <link rel="stylesheet" href="{{static}}css/color-schemes/deepblue.css" type="text/css" media="all"
+        id="color_scheme" />
+    {% endif %}
+</head>
+
+<body style="background-color:rgb(255, 255, 255);">
+
+    <!-- HEADER -->
+    <header class="{% if path == '/'%}test{%else%}test2{% endif %}">
+        <div class="header no-print">
+            <div class="container">
+                <div class="header-wrapper">
+                    <div class="row">
+                        <div class="col-md-5 col-sm-6 col-xs-7">
+                            <div class="header-buttons">
+                                {% if authenticate %}
+                                <a href="/customer/profile" class="showable-name">
+                                    {{user.showable_name}}
+                                    <span class="icon-user"></span>
+                                </a>
+                                <div class="parent-submenu basket-box">
+                                    <a href="/order/basket" class="btn basket-btn icon-basket" title="Basket">
+                                        {% if basket.count %}
+                                        <span>{{basket.count}}</span>
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <a href="/auth/logout" class="btn register-btn" title="Exit">
+                                    <span class="icon-logout"></span>
+                                    خروج
+                                </a>
+                                {% else%}
+                                <div class="parent-submenu basket-box">
+                                    <a href="/order/basket" class="btn icon-basket basket-btn">
+                                        {% if basket.count %}
+                                        <span>{{basket.count}}</span>
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <a href="/auth" class="btn register-btn" title="Login/Register">
+                                    <span class="icon-login"></span>
+                                    ورود / عضویت
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-5">
+                            <div class="logo">
+                                <a href="/" title="Your Logo">
+                                    <span class="icon-Pegasus-left"></span>
+                                    {% if store.logo %}
+                                    <img src="{{store.logo}}" alt="{{store.name}}">
+                                    {% else %}
+                                    {{store.name}}
+                                    {% endif %}
+                                    <span class="icon-Pegasus-right"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="search-box">
+                             <input type="search" class="form-control ds-input" id="search-input"
+                                    placeholder="جستجو..." autocomplete="off" spellcheck="false" role="combobox"
+                                    aria-autocomplete="list" aria-expanded="false"
+                                    aria-owns="algolia-autocomplete-listbox-0"
+                                    style="position: relative; vertical-align: middle;" dir="auto">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main-Menu -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="main-header">
+                        <nav class="navbar">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                    data-target="#main-menu" aria-expanded="false">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+                            <div id="main-menu" class="navbar-collapse collapse">
+                                <ul class="nav navbar-nav">
+                                    <li class="active">
+                                    </li>
+                                    <li>
+                                        <a href="/" title="HOME"><span style="font-size:19px;"></span>خانه</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                                            title="PRODUCTS"><span style="font-size:19px;"></span>دسته بندی<b
+                                                class="caret"></b></a>
+                                        <button data-toggle="dropdown" class="dropdown-btn"></button>
+                                        <ul class="dropdown-menu">
+                                            {% for category in categories %}
+                                            <li
+                                                class="dropdown {% if category.children %} dropdown-submenu {% endif %}">
+                                                <a href="/product/list?cat={{category.id}}">{{category.name}}</a>
+                                                {% if category.children %}
+                                                <button data-toggle="dropdown" class="dropdown-btn"></button>
+                                                {% endif %}
+                                                {% if category.children %}
+                                                <ul class="dropdown-menu">
+                                                    {% for child in category.children %}
+                                                    <li class="dropdown dropdown-submenu">
+                                                        <a href="/product/list?cat={{child.id}}" {% if child.children %}
+                                                            class="dropdown-toggle" {% endif %}>{{child.name}}</a>
+                                                        {% if child.children %}
+                                                        <button data-toggle="dropdown" class="dropdown-btn"></button>
+                                                        {% endif %}
+                                                        {% if child.children %}
+                                                        <ul class="dropdown-menu">
+                                                            {% for secondchild in child.children %}
+                                                            <li class="dropdown dropdown-submenu">
+                                                                <a href="/product/list?cat={{secondchild.id}}"
+                                                                    {% if secondchild.children %}
+                                                                    class="dropdown-toggle"
+                                                                    {% endif %}>{{secondchild.name}}</a>
+                                                                {% if secondchild.children %}
+                                                                <button data-toggle="dropdown"
+                                                                    class="dropdown-btn"></button>
+                                                                {% endif %}
+                                                                {% if secondchild.children %}
+                                                                <ul class="dropdown-menu">
+                                                                    {% for thirdchild in secondchild.children%}
+                                                                    <li>
+                                                                        <a
+                                                                            href="/product/list?cat={{thirdchild.id}}">{{thirdchild.name}}</a>
+                                                                    </li>
+                                                                    {% endfor %}
+                                                                </ul>
+                                                                {% endif %}
+                                                            </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                        {% endif %}
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                                {% endif %}
+                                            </li>
+                                            {% endfor %}
+                                            <li>
+                                                <a href="/product/list">همه محصولات</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    {% for menu in store.menues %}
+                                    <li class="dropdown">
+                                        <a href="{{menu.link}}" class="dropdown-toggle">{{menu.name}}
+                                            {% if menu.has_published_child %} <b class="caret"></b>{% endif %}</a>
+                                        {% if menu.has_published_child %}
+                                        <button data-toggle="dropdown" class="dropdown-btn"></button>
+                                        {% endif %}
+                                        {% if menu.has_published_child %}
+                                        <ul class="dropdown-menu">
+                                            {% for child in menu.children %}
+                                            <li class="dropdown dropdown-submenu">
+                                                <a href="{{child.link}}" {% if child.has_published_child %}
+                                                    class="dropdown-toggle" {% endif %}>{{child.name}}</a>
+                                                {% if child.has_published_child %}
+                                                <button data-toggle="dropdown" class="dropdown-btn"></button>
+                                                {% endif %}
+                                                {% if child.has_published_child %}
+                                                <ul class="dropdown-menu">
+                                                    {% for child_child in child.children %}
+                                                    <li>
+                                                        <a href="{{child_child.link}}">{{child_child.name}}</a>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                                {% endif %}
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                    {% set blog = has_content("blog") %}
+                                    {% if blog %}
+                                    <li>
+                                        <a href="/content/blog" title="BLOG">بلاگ</a>
+                                    </li>
+                                    {% endif %}
+                                    {% set news = has_content("news") %}
+                                    {% if news %}
+                                    <li>
+                                        <a href="/content/news">اخبار</a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    {% block slider %}
+    {% if slider.id %}
+    <!-- SLIDER -->
+    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        {% if slider.images|length > 1 %}
+        <ol class="carousel-indicators">
+            {% for slide in slider.slides %}
+            <li data-target="#carousel-example-generic" data-slide-to="{{ forloop.Counter0 }}"
+                {% if forloop.Counter0 == 0 %} class="active" {% endif %}></li>
+            {% endfor %}
+        </ol>
+        {% endif %}
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox">
+            {% for slide in slider.slides %}
+            <div class="item {% if forloop.Counter0 == 0 %} active {% endif %}">
+                <img src="{{ slide.image }}" alt="{{ slide.desc }}">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endblock %}
+
+    {% block content %}{% endblock %}
+
+    <!-- CONTACT-INFO -->
+    <div class="jumbotron" style="background-color:rgb(133, 133, 133);">
+        <div class="container">
+            <div class="contact-info">
+                <div class="info-border"></div>
+                <div class="info-content">
+                    <ul class="socials">
+                        {% if store.socials.instagram %}
+                        <li>
+                            <a href="{{store.socials.instagram}}" id="instagram" target="_blank"></a>
+                        </li>
+                        {% endif %}
+                        {% if store.socials.twitter %}
+                        <li>
+                            <a href="{{store.socials.twitter}}" id="twitter" target="_blank"></a>
+                        </li>
+                        {% endif %}
+                        {% if store.socials.facebook %}
+                        <li>
+                            <a href="{{store.socials.facebook}}" id="facebook" target="_blank"></a>
+                        </li>
+                        {% endif %}
+                        {% if store.socials.telegram %}
+                        <li>
+                            <a href="{{store.socials.telegram}}" id="telegram" target="_blank"></a>
+                        </li>
+                        {% endif %}
+                        {% if store.socials.google_plus %}
+                        <li>
+                            <a href="{{store.socials.google_plus}}" id="google-plus" target="_blank"></a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <!-- FOOTER -->
+            <div class="row">
+                <div class="footer-navbar">
+                    <div class="col-md-3 col-sm-6 col-xs-12"><a href="/contact" style="color:#333;">تماس با
+                            ما</a></div>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="footer-social">
+                            <div class="footer-social-text"><a href="#" style="color:#333;">به ما بپیوندید</a>
+                            </div>
+                            <div class="footer-social-shape">
+                                <ul class="list-inline">
+                                    <li>
+
+                                    </li>
+                                    <li>
+
+                                    </li>
+                                    <li>
+
+                                    </li>
+                                    <li>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-xs-12"><a href="/report" style="color:#333;">ثبت
+                            شکایات</a></div>
+                    <div class="col-md-3 col-sm-6 col-xs-12"><a href="//bab.ir/contact?complaint" target="_blank"
+                            style="color:#333;">شکایت از فروشگاه</a></div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-12 col-sm-6 col-xs-12">
+                    <div class="footer-essential">
+                        <h6>
+                            <a href="https://bab.ir" target="_blank" class="bab-link" style="color:#333;">
+                                فروشگاه ساز
+                            </a>
+                            <strong style="font-size:14px;color: whitesmoke;">باب!</strong>
+                        </h6>
+                        <a href="https://bab.ir" target="_blank">
+                            <img src="/static/images/footer_logo_bab.png" alt="لوگوی فروشگاه ساز باب" title="BAB">
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                $(this).parent().siblings().removeClass('open');
+                $(this).next('ul.dropdown-menu').children('li').removeClass('open');
+                $(this).parent().toggleClass('open');
+            });
+        });
+    </script>
+    {% block custom_footer %}{% endblock %}
+</body>
+
+</html>

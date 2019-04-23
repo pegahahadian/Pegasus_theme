@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{store.name}} | آدرس{% endblock %}
+
+{% block custom_header %}
+    <link rel="stylesheet" href="{{static}}leaflet/leaflet.css">
+    <link rel="stylesheet" href="{{static}}leaflet/leaflet.zoomhome.css"/>
+    <script type="text/javascript" src="{{static}}leaflet/leaflet.js"></script>
+    <script type="text/javascript" src="{{static}}leaflet/leaflet.zoomhome.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- Content section -->    
+    <section class="main">
+        <!-- Add-Address -->
+        <section class="add-address">
+            <div class="container" style="font-family:byekan;">
+                <div class="row">
+                    <div class="col-sm-12">
+                        {% if error %}
+                        <div class="errors">
+                            <p class="alert alert-danger"> {{_(error)}} </p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-12">
+                        <!-- Address -->
+                        <div class="address">
+                            <div class="box">
+                                <form method="post" action="{% if edit %}/customer/address/{{address.id}}/edit{% else %}/customer/address/add{% endif %}">
+                                    <div class="hgroup-title">
+                                        <br>
+                                        <h3 style="font-weight:bold;">آدرس</h3>
+                                    </div>
+                                    <div class="box-content" style="color:rgb(104,104,104);">
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="name">نام تحویل گیرنده</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="name" name="receiver_name" value="{{address.receiver_name}}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">  
+                                                <div class="form-group">                    
+                                                    <label class="control-label required" for="state">استان</label>
+                                                    <div class="controls">
+                                                        <select class="form-control state-list" name="state" id="state" data-value="{{address.state}}">
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">  
+                                                <div class="form-group">                    
+                                                    <label class="control-label required" for="city">شهرستان</label>
+                                                    <div class="controls">
+                                                        <select class="form-control city-list" name="city" id="city" data-value="{{address.city}}">
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="address" class="control-label required">نشانی</label>
+                                                    <div class="controls">
+                                                        <textarea id="address" name="address" class="form-control">{{address.address}}</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="control-label required" for="phone">شماره تماس</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="call" name="call" type="text" value="{% if address.call %}{{address.call}}{% else %}{{user.cellphone}}{% endif%}">
+                                                    </div>
+                                                    <br>
+                                                    <div class="buttons">
+                                                            <button type="submit" class="btn general-btn btn-default" style="float: right;">ارسال</button>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="control-label required" for="postal_code">کد پستی</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="postal_code" name="postal_code" type="text" value="{{address.postal_code}}">
+                                                    </div>
+                                                    <br>
+                                                    
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="latitude" id="map_latitude" value="{{address.latitude}}">
+                                            <input type="hidden" name="longitude" id="map_longitude" value="{{address.longitude}}">
+                                            <div class="col-md-12">
+                                                <div id="us3" style="height: 500px; margin-top: 20px">
+                                                    
+                                                </div>
+                                                
+                                            </div>
+                                        </div>  
+                                    </div>
+                                    
+                                    <br>                
+                                </form>     
+                            </div>
+                        </div>
+                        <!-- End class="Address" -->                                
+                    </div> 
+                </div>
+            </div>
+        </section>                
+        <!-- Add-Address -->            
+    </section>
+<!-- End class="main" -->
+
+{% endblock %}
+
+{% block custom_footer %}
+<script type="text/javascript" src="{{static}}js/iran.address.js"></script>
+{% endblock %}

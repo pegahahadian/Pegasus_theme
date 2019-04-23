@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{store.name}} | احراز هویت {% endblock %}
+
+{% block content %}
+
+<!-- Content section -->    
+    <section class="main" style="color:rgb(104,104,104);">
+        <!-- Login / Register -->
+        <section class="login_register">
+            <div class="container" style="font-family:byekan;">
+                <div class="row">
+                    {% if error %}
+                    <div class="col-sm-12">
+                        <div class="errors">
+                            <p class="alert alert-danger"> {{_(error)}} </p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if msg %}
+                    <div class="col-sm-12">
+                        <div class="errors">
+                            <p class="alert alert-success"> {{_(msg)}} </p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <br>
+                    <div class="col-sm-6">
+                        <!-- Login -->
+                        <div class="login">
+                            <div class="box">
+                                {% if not forget_password %}
+                                <div class="hgroup-title">
+                                    <h3 style="color:rgb(0, 0, 0);">ورود کاربر</h3>
+                                    <h5 style="color:#333;">لطفا با استفاده از حساب کاربری خود وارد شوید</h5>
+                                </div>
+                                <div class="box-content">
+                                    <div class="row">
+                                        <form action="/auth/login" method="post">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="login_email">{{_(store.acceptable_customer_register_info)}}</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="login_email" type="text" name="contact_info"/>
+                                                    </div>
+                                                    <br>
+                                                    <br> 
+                                                    <br>
+                                                    <br>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">  
+                                                <div class="form-group">                    
+                                                    <label class="control-label" for="login_password">رمز عبور</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="login_password" type="password" name="password" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <input id="remember" class="log-checkbox" type="checkbox"> 
+                                                <label class="remember-check" for="remember">مرا به خاطر داشته باش</label>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <a href="/auth/forget_password" class="forgot-pw" style="color:gray;">رمز عبور خود را فراموش کرده ام</a>
+                                            </div>
+                                            {% if login_captcha_required %}
+                                            <div class="col-sm-12">
+                                                <div class="g-recaptcha" data-sitekey="{{captcha_key}}"></div>
+                                            </div>
+                                            {% endif %}
+                                            <div class="col-sm-12">
+                                                <div class="buttons">
+                                                    <button type="submit" class="btn btn-default general-btn">ورود</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>  
+                                </div>
+                                {% elif forget_password && not forget_password_verify %}
+                                <!-- Forget Password Form -->
+                                <div class="hgroup-title">
+                                    <h3>فراموشی رمز عبور</h3>
+                                    <h5>لطفا اطلاعات کاربری خود وارد شوید</h5>
+                                </div>
+                                <div class="box-content">
+                                    <div class="row">
+                                        <form action="/auth/forget_password" method="post">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="fpw">{{_(store.acceptable_customer_register_info)}}</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="fpw" type="text" name="contact_info" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div class="g-recaptcha" data-sitekey="{{captcha_key}}"></div>
+                                            </div>
+                                            <div class="col-xs-12">
+                                                <div class="buttons">
+                                                    <button class="btn btn-default general-btn" type="submit">ارسال</button>
+                                                    <a href="/auth" class="btn btn-default second-btn">بازگشت</a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% elif forget_password && forget_password_verify %}
+                                <!-- Forget Password Verify Form -->
+                                <div class="hgroup-title">
+                                    <h3>فراموشی رمز عبور</h3>
+                                    <h5>لطفا کد ارسال شده را وارد کنید</h5>
+                                </div>
+                                <div class="box-content">
+                                    <div class="row">
+                                        <form action="/auth/forget_password/verify" method="get">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="fpw-code">کد ارسال شده:</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="fpw-code" type="text" name="key" value="" />
+                                                        <input class="hide" id="fpw-code" type="text" name="contact_info" value="{{contact_info}}" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div class="g-recaptcha" data-sitekey="{{captcha_key}}"></div>
+                                            </div>
+                                            <div class="col-xs-12">
+                                                <div class="buttons">
+                                                    <button class="btn btn-default general-btn" type="submit">ارسال</button>
+                                                    <a href="/auth" class="btn btn-default second-btn">بازگشت</a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% endif %}                  
+                            </div> 
+                        </div>
+                        <!-- End class="login" -->                                
+                    </div>
+                    <div class="col-sm-6">                                
+                        <!-- Register -->
+                        <div class="register">
+                            <div class="box">
+                                {% if not register_freeze && not registration_verify %}
+                                <form action="/auth/register" method="post">
+                                    <div class="hgroup-title">
+                                        <h3 style="color:rgb(0, 0, 0);">عضویت</h3>
+                                        <h5 style="color:#333;">در صورت نداشتن حساب کاربری، در این قسمت ثبت نام کنید</h5>
+                                    </div>
+                                    <div class="box-content">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="name"> نام و نام خانوادگی</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="name" type="text" name="fullname">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">  
+                                                <div class="form-group">                    
+                                                    <label class="control-label" for="contact-info">{{_(store.acceptable_customer_register_info)}}</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="contact-info" type="text" name="contact_info"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">  
+                                                <div class="form-group">                    
+                                                    <label class="control-label" for="password">رمز عبور</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="password" type="password" name="password" autocomplete="off"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% if register_captcha_required %}
+                                                <div class="col-xs-12">
+                                                    <div class="g-recaptcha" data-sitekey="{{captcha_key}}"></div>
+                                                </div>
+                                            {% endif %}
+                                        </div>  
+                                    </div>
+                                    <div class="buttons">
+                                        <button class="btn btn-default general-btn" type="submit">عضویت</button>
+                                    </div>  
+                                    <br>               
+                                </form>
+                                {% endif %}
+                                {% if registration_verify %}
+                                <form action="/auth/register/verify" method="get">
+                                    <div class="hgroup-title">
+                                        <h3>عضویت</h3>
+                                        <h5>کد ارسال شده را وارد نمایید</h5>
+                                    </div>
+                                    <div class="box-content">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="verify-code">کد ارسال شده: </label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="verify-code" type="text" name="key" value="" />
+                                                        <input class="hide" id="verify-code" type="text" name="contact_info" value="{{contact_info}}" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="buttons">
+                                        <button class="btn btn-default general-btn" type="submit">ارسال</button>
+                                        <a href="/auth" class="btn btn-default second-btn">بازگشت</a>
+                                    </div>  
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- End class="register" -->
+                    </div>  
+                </div>
+            </div>
+        </section>                
+        <!-- End Login / Register -->            
+    </section>
+<!-- End class="main" -->
+
+{% endblock %}
+
+{% block custom_header %}
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}

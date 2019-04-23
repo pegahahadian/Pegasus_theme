@@ -1,0 +1,453 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{store.name}} {% if product.page_title %} | {{ product.page_title }} {% endif %}{% endblock %}
+
+{% block custom_header %}
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
+
+{% block content %}
+    <!-- Content section -->
+    <section class="main" style="font-family:byekan;">
+        <div class="product">
+            <div class="container">
+                <div class="row row-flex">
+                    <div class="col-sm-4">
+                        <div class="product-images flex-content">
+                            <div class="box">
+                                <div class="zoom-wrapper">
+                                    <div class="zoom-left">
+                                        <img style="border:1px solid #e8e8e6;" class="zoom-gallery" src="{{product.mid_pic}}" data-zoom-image="{{product.mid_pic}}" width="100%" />
+                                        <div class="thumbs" id="gallery">
+                                            <ul class="thumbs-list clearfix">
+                                                {% for image in product.mid_pics %}
+                                                <li>
+                                                    <a {% if forloop.counter == 0 %} class="active" {% endif %} href="#" data-image="{{image}}" title="{{product.name}}" data-zoom-image="{{image}}">
+                                                        <img  src="{{image}}" alt="{{product.name}}"/>
+                                                    </a>
+                                                </li>
+                                               {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="product-content flex-content">
+                            <div class="box">
+                                <!-- Tab panels' navigation -->
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#product" data-toggle="tab">
+                                            <i class="fa fa-reorder fa-lg"></i>
+                                            <span class="hidden-xs">محصول</span>
+                                        </a>
+                                    </li>
+                                    {% if product.description %}
+                                    <li>
+                                        <a href="#description" data-toggle="tab">
+                                            <i class="fa fa-info-circle fa-lg"></i>
+                                            <span class="hidden-xs">اطلاعات</span>
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                                <!-- End Tab panels' navigation -->
+                                <!-- Tab panels container -->
+                                <div class="tab-content">
+                                    <!-- Product tab -->
+                                    <div class="tab-pane active" id="product">
+                                        <div class="details">
+                                            <h1>{{product.name}}</h1>
+                                            <div  class="meta">
+                                                {% for i in "0"|ljust:product.rate %}
+                                                <i class="fa fa-heart"></i> 
+                                                {% endfor %}
+                                            </div>
+                                            <div class="prices">
+                                                {% if product.orginal_price != product.discounted_price %}
+                                                <div class="base">قیمت اولیه: <del>{{ pricing("toman", product.orginal_price, "fa") }}</del></div>
+                                                {% endif %}
+                                                {% if product.orginal_price|floatformat == 0 || product.count == 0 && not product.sell_no_exist %}
+                                                <div class="price bold-price">موجود نیست</div>
+                                                {% else %}
+                                                <div class="price">قیمت فعلی: <span class="bold-price">{{ pricing("toman", product.discounted_price, "fa") }}</span></div>
+                                                {% endif %}
+                                            </div>
+                                            {% if product.weight %}
+                                            <div class="meta">
+                                                <div class="weight">
+                                                    <i class="fa fa-square" aria-hidden="true"></i>
+                                                    <span class="meta-title">
+                                                        <strong>وزن:‌</strong>
+                                                    </span>
+                                                    {{product.weight|floatformat}} گرم
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <!-- <div class="meta">
+                                                {% if product.sku %}
+                                                <div class="sku">
+                                                    <i class="fa fa-pencil"></i>
+                                                    {{product.sku}}
+                                                </div>
+                                                {% endif %}
+                                            </div> -->
+                                            {% if product.tags %}
+                                            <div class="meta">
+                                                <div class="tags">
+                                                    <i class="fa fa-tags"></i>
+                                                    <span class="meta-title">
+                                                        <strong>برچسب ها:‌</strong>
+                                                    </span>
+                                                    {% for tag in product.tags |slice:":5" %}
+                                                        <span class="tag-words">{{tag}}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            {% if product.products_bundled %}
+                                            <div class="meta">
+                                                <div class="bundle-items">
+                                                    <i class="fa fa-cubes"></i>
+                                                    <span class="meta-title">
+                                                        <strong>محصولات این بسته:</strong>
+                                                    </span>nav-tabs
+                                                    {% for pb in product.products_bundled %}
+                                                        <span class="b-items"> {{pb.name}} </span>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            {% if product.variants %}
+                                            <div class="meta">
+                                                <div class="variants">
+                                                    <span class="meta-title">
+                                                        <strong>انواع محصول: </strong>
+                                                        <hr>
+                                                        <div class="wrapper">
+                                                            {% for vp in product.variants %}
+                                                            <div class="variant-products">
+                                                                <a href="/product/{{vp.product.id}}?name={{vp.product.name}}" {% if vp.product.id == product.id %} class="selected" {% endif %}>
+                                                                    <img src="{{vp.product.mid_pic}}" alt="{{product.name}}">
+                                                                    <div class="variant-info">
+                                                                        {% for type in vp.variants %}
+                                                                        <span>{{type.variant_type}}:</span>
+                                                                        <span>{{type.value}}</span>
+                                                                          <br>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <br>
+                                        <div class="add-to-cart">
+                                            <a class="btn btn-default general-btn" {% if store.ordering_freeze || product.orginal_price|floatformat == 0 || not product.sell_no_exist && product.count == 0 %} disabled {% else %} href="/order/basket/update?product={{product.id}}" {% endif %}}>
+                                                <i class="fa fa-plus"></i> &nbsp;{% if product.orginal_price|floatformat == 0 || product.count == 0 && not product.sell_no_exist || store.ordering_freeze %} موجود نیست {% else %} اضافه به سبد {% endif %}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!-- End id="product" -->
+                                    <!-- Description tab -->
+                                    <div class="tab-pane" id="description">
+                                        <p class="description">
+                                            <span>{{product.description|linebreaks|safe}}</span>
+                                            <br/>
+                                            <br/>
+                                            <span>{{product.extra_description|linebreaks|safe}}</span>
+                                        </p>
+                                    </div>
+                                    <!-- End id="description" -->
+                                </div>
+                                <!-- End tab panels container -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- More Info Box -->
+                    <div class="col-sm-12">
+                        <div class="product-content more-info-box">
+                            <div class="box">
+                                <!-- Tab panels' navigation -->
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#additional-info" data-toggle="tab">
+                                            <i class="fa fa-info fa-lg"></i>
+                                            <span class="hidden-xs">اطلاعات تکمیلی</span>
+                                        </a>
+                                    </li>
+                                    <!-- for comment -->
+                                    <li>
+                                        <a href="#comments" data-toggle="tab">
+                                            <i class="fa fa-heart fa-lg"></i>
+                                            <span class="hidden-xs">نظرات</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <!-- End Tab panels' navigation -->
+
+                                <!-- Tab panels container -->
+                                <div class="tab-content">
+                                    <!-- Additional-info -->
+                                    <div class="tab-pane active" id="additional-info">
+                                        {% if product.products_bundled %}
+                                        
+                                            {% for pb in product.products_bundled %}
+                                                {% if pb.form_properties %}
+                                                <h4>{{pb.name}}</h4>
+                                                {% endif %}
+                                                {% for form in pb.form_properties %}
+                                                <div class="table-responsive">
+                                                    <table class="table info-table">
+                                                        <caption><span class="icon-pegasus-sign"></span>{{ form.name }}</caption>
+                                                        {% if form.view_as_table %}
+                                                            <thead>
+                                                            {% for field in form.fields %}
+                                                                <th>{{field.name}}</th>
+                                                            {% endfor %}
+                                                            </thead>
+                                                            <tbody>
+                                                                {% set rows = row_number(form.fields.0.value) %}
+                                                                {% for i in rows %}
+                                                                 <tr>
+                                                                     {% for field in form.fields %}
+                                                                     <td>
+                                                                         {% set value = index(field.value, i) %}
+                                                                         {% if value == nil %}
+                                                                             {% set value = field.default_value %}
+                                                                         {% endif %}
+                                                                         {% if field.value_type == "boolean" %}
+                                                                             {% if value == "true" %}
+                                                                             <i class="fa fa-check"></i>
+                                                                             {% else %}
+                                                                             <i class="fa fa-times"></i>
+                                                                             {% endif %}
+                                                                         {% else %}
+                                                                         {{ value }}
+                                                                         {% endif %}
+                                                                     </td>
+                                                                     {% endfor %}
+                                                                 </tr>
+                                                                {% endfor %}
+                                                            </tbody>
+                                                        {% else %}
+                                                            {% for field in form.fields %}
+                                                             <tr>
+                                                                 <td class="formalize">{{field.name}}</td>
+                                                                 <td class="formalize-value">
+                                                                     {% if field.type == "slice" %}
+                                                                         {% set value = field.value.0 %}
+                                                                     {% else %}
+                                                                         {% set value = field.value %}
+                                                                     {% endif %}
+                                                                     {% if value == nil %}
+                                                                         {% set value = field.default_value %}
+                                                                     {% endif %}
+                                                                     {% if field.value_type == "boolean" %}
+                                                                         {% if value == "true" %}
+                                                                         <i class="fa fa-check"></i>
+                                                                         {% else %}
+                                                                         <i class="fa fa-times"></i>
+                                                                         {% endif %}
+                                                                     {% else %}
+                                                                     {{ value }}
+                                                                     {% endif %}
+                                                                 </td>
+                                                             </tr>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </table>
+                                                </div>
+                                                {% endfor %}
+                                            {% endfor %}
+
+                                        {% else %}
+
+                                           {% for form in product.form_properties %}
+                                           <div class="table-responsive">
+                                               <table class="table info-table">
+                                                   <caption><span class="icon-pegasus-sign"></span>{{ form.name }}</caption>
+                                                   {% if form.view_as_table %}
+                                                       <thead>
+                                                       {% for field in form.fields %}
+                                                           <th>{{field.name}}</th>
+                                                       {% endfor %}
+                                                       </thead>
+                                                       <tbody>
+                                                           {% set rows = row_number(form.fields.0.value) %}
+                                                           {% for i in rows %}
+                                                            <tr>
+                                                                {% for field in form.fields %}
+                                                                <td>
+                                                                    {% set value = index(field.value, i) %}
+                                                                    {% if value == nil %}
+                                                                        {% set value = field.default_value %}
+                                                                    {% endif %}
+                                                                    {% if field.value_type == "boolean" %}
+                                                                        {% if value == "true" %}
+                                                                        <i class="fa fa-check"></i>
+                                                                        {% else %}
+                                                                        <i class="fa fa-times"></i>
+                                                                        {% endif %}
+                                                                    {% else %}
+                                                                    {{ value }}
+                                                                    {% endif %}
+                                                                </td>
+                                                                {% endfor %}
+                                                            </tr>
+                                                           {% endfor %}
+                                                       </tbody>
+                                                   {% else %}
+                                                       {% for field in form.fields %}
+                                                        <tr>
+                                                            <td class="formalize">{{field.name}}</td>
+                                                            <td class="formalize-value">
+                                                                {% if field.type == "slice" %}
+                                                                    {% set value = field.value.0 %}
+                                                                {% else %}
+                                                                    {% set value = field.value %}
+                                                                {% endif %}
+                                                                {% if value == nil %}
+                                                                    {% set value = field.default_value %}
+                                                                {% endif %}
+                                                                {% if field.value_type == "boolean" %}
+                                                                    {% if value == "true" %}
+                                                                    <i class="fa fa-check"></i>
+                                                                    {% else %}
+                                                                    <i class="fa fa-times"></i>
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                {{ value }}
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                       {% endfor %}
+                                                   {% endif %}
+                                               </table>
+                                           </div>
+                                           {% endfor %}
+
+                                        {% endif %}
+                                    </div>
+                                    <!-- End id="Additional-info" -->
+
+                                    <!-- Comment tab -->
+                                    <div class="tab-pane" id="comments">
+                                        <div class="comment-sharing">
+                                            <form id="comment-form" data-product="{{product.id}}">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <h6>
+                                                            <i class="fa fa-comments-o"></i>
+                                                             نظرتان را با دیگران به اشتراک بگذارید! &nbsp;
+                                                            <div id="alert">
+                                                                <span></span>
+                                                            </div>
+                                                        </h6>
+                                                        <div class="media">
+                                                            <div class="media-right">
+                                                                <i class="fa fa-user"></i>
+                                                            </div>
+                                                            <div class="media-body">
+                                                                <h4 class="media-heading">{{user.showable_name}}</h4>
+                                                                <textarea name="body" data-body="body" id="" placeholder="نظر خود را وارد کنید ..."></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="cm-rating-wrapper">
+                                                            <div class="cm-rating">
+                                                                <input type="radio" class="rating-input" id="rating-input-1" name="rate" value="5">
+                                                                <label for="rating-input-1" class="rating-star">
+                                                                    <i class="fa fa-heart"></i>
+                                                                </label>
+                                                                <input type="radio" class="rating-input" id="rating-input-2" name="rate" value="4">
+                                                                <label for="rating-input-2" class="rating-star">
+                                                                    <i class="fa fa-heart"></i>
+                                                                </label>
+                                                                <input type="radio" class="rating-input" id="rating-input-3" name="rate" value="3">
+                                                                <label for="rating-input-3" class="rating-star">
+                                                                    <i class="fa fa-heart"></i>
+                                                                </label>
+                                                                <input type="radio" class="rating-input" id="rating-input-4" name="rate" value="2">
+                                                                <label for="rating-input-4" class="rating-star">
+                                                                    <i class="fa fa-heart"></i>
+                                                                </label>
+                                                                <input type="radio" class="rating-input" id="rating-input-5" name="rate" value="1">
+                                                                <label for="rating-input-5" class="rating-star">
+                                                                    <i class="fa fa-heart"></i>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        {% if comment_captcha_required %}
+                                                        <div class="g-recaptcha" data-sitekey="{{captcha_key}}"></div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="cm-send-btn">
+                                                            <button type="submit" id="submit" class="btn btn-seccess general-btn">ثبت نظر</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <div class="other-comments">
+                                                <div class="row new-comment">
+                                                    {% for comment in comments %}
+                                                    <div class="col-sm-12">
+                                                        <div class="media">
+                                                            <div class="media-right">
+                                                                <i class="fa fa-user"></i>
+                                                            </div>
+                                                            <div class="media-body">
+                                                                <h4 class="media-heading">
+                                                                    {{comment.username}}
+                                                                    <span class="cm-rate">
+                                                                        {% for i in "0"|ljust:comment.rate %}
+                                                                            <i class="fa fa-heart"></i> 
+                                                                        {% endfor %}
+                                                                    </span>
+                                                                    <small id="comment-date">{{comment.create_at}}</small>
+                                                                </h4>
+                                                                <p>{{comment.body}}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                <!-- <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="more">
+                                                            <a href="#">موارد بیشتر</a>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End id="comments" -->
+                                </div>
+                                <!-- End tab panels container -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block custom_footer %}
+<script src="{{static}}js/jquery.elevateZoom-min.js"></script>
+<script src="{{static}}js/product.js"></script>
+<script src="{{static}}vendor/DateConvertor/date-convertor.js"></script>
+{% endblock %}

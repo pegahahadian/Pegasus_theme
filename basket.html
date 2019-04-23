@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{store.name}} | سبد خرید{% endblock %}
+
+{% block content %}
+
+<!-- Content section -->    
+    <section class="main" style="font-family:byekan;">
+        <!-- Cart container -->
+        <br>
+        <section class="cart">
+            <div class="container">
+                {% if deleted_items %}
+                <div class="col-sm-12">
+                    <div class="errors">
+                        <p class="alert alert-danger"> {{_(error)}}: 
+                        {% for item in deleted_items %}
+                            <span>{{item}} , </span>
+                        {% endfor %}
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+                {% if changed_items %}
+                <div class="col-sm-12">
+                    <div class="msg">
+                        <p class="alert alert-success">{{_(msg)}}: 
+                        {% for item in changed_items %}
+                            <span>{{item}} , </span>
+                        {% endfor %}
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Cart -->
+                        <div class="box">
+                            <form method="get" action="/order/shipping">
+                                <div class="hgroup-title">
+                                    <h3>سبد خرید </h3>
+                                </div>
+                                <div class="box-content">
+                                    <table class="table table-responsive styled-table">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-product col-md-3">محصول</th>
+                                                <th class="col-md-1"></th>
+                                                <th class="col-md-2 col-sm-3 col-xs-3">تعداد</th>
+                                                <th class="col-md-2">قیمت</th>
+                                                <th class="col-md-2 col-sm-1 col-xs-1">تخفیف</th>
+                                                <th class="col-md-2">مجموع</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in basket.items %}
+                                            <tr>
+                                                <td class="col-product">
+                                                    <img src="{{item.product.micro_pic}}" alt="{{item.product.name}}">
+                                                    <span>{{item.product.name}}</span>
+                                                </td>
+                                                <td class="col-trash align-parent" data-title="Remove">
+                                                    <a href="/order/basket/update?in_basket=true&product={{item.product.id}}" class="align-child"><i class="fa fa-trash"></i></a>
+                                                </td>
+                                                <td class="col-qty align-parent" data-title="Qty">
+                                                    <div class="align-child">
+                                                        <a href="/order/basket/update?count={{item.count+1}}&in_basket=true&product={{item.product.id}}">+</a>
+                                                        <input type="text" value="{{item.count}}" class="item-count">
+                                                        <a href="/order/basket/update?count={{item.count-1}}&in_basket=true&product={{item.product.id}}">-</a>
+                                                    </div>
+                                                </td>
+                                                <td class="align-parent">
+                                                    <span class="align-child">{{ pricing("toman", item.price, "fa") }}</span>
+                                                </td>
+                                                <td class="align-parent">
+                                                    <span class="align-child">{{ pricing("toman", item.product.discount, "fa") }}</span>
+                                                </td>
+                                                <td class="align-parent">
+                                                    <span class="align-child">{{ pricing("toman", item.total_price, "fa") }}</span>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="buttons">
+                                    <a href="/product/list" class="btn btn-default second-btn pull-left">
+                                        <i class="fa fa-chevron-right"></i> &nbsp; بازگشت و ادامه خرید
+                                    </a>
+                                    <button class="btn btn-default general-btn pull-right" type="submit" {% if basket.count == 0 %} disabled {% endif %}>
+                                        تایید سفارش &nbsp; <i class="fa fa-chevron-left"></i>
+                                    </button> 
+                                    <div class="clearfix"></div>        
+                                </div>
+                            </form>
+                            <br>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <!-- Cart details -->
+                        <div class="cart-details">
+                            <div class="box">
+                                <div class="hgroup-title" style="color:#333; font-size:medium;">
+                                    <h3> مجموع خرید: </h3>
+                                    <h5> </h5>
+                                </div>
+                                <ul class="price-list" style="color:rgb(104,104,104);">
+                                    <li>مجموع تخفیف: <strong>{{ pricing("toman", basket.total_discount, "fa") }}</strong></li>
+                                    <li class="important" style="color:rgb(104,104,104);">مجموع: <strong>{{ pricing("toman", basket.total_price, "fa") }}</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- End class="cart-details" -->  
+                    </div>
+                </div>
+            </div>  
+        </section>         
+        <!-- End Cart container -->
+    </section>
+<!-- End class="main" -->
+
+{% endblock %}

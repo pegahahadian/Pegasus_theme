@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{store.name}} | حساب کاربری{% endblock %}
+
+{% block custom_header %}
+<link rel="stylesheet" type="text/css" href="{{static}}vendor/DataTables/datatables.min.css" />
+<script type="text/javascript" src="{{static}}vendor/DataTables/datatables.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- Content section -->    
+    <section class="main" style="font-family:byekan;color: rgb(104, 104, 104)">
+        <!-- Customer-Profile -->
+        <section class="login_register">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <br>
+                        <!-- Order-History-Btn -->
+                        <button type="button" class="btn history-btn" data-toggle="collapse" data-target="#history">تاریخچه خرید</button>
+                        <!-- Address-Management-Btn -->
+                      
+                        <button type="button" class="btn history-btn" data-toggle="collapse" data-target="#address-management">مدیریت آدرس ها</button>
+                        <!-- Order-History -->
+                        <div class="collapse" id="history">
+                            <div class="box">
+                                    <div class="hgroup-title">
+                                        <h3>تاریخچه خرید</h3>
+                                    </div>
+                                    <div class="box-content">
+                                        <table id="history-table" class="display" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>شماره سفارش</th>
+                                                    <th>تاریخ سفارش</th>
+                                                    <th>وضعیت پرداخت</th>
+                                                    <th>وضعیت</th>
+                                                    <th>مبلغ نهایی</th>
+                                                    <th>تنظیمات</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                            </div>
+                        </div>
+                        <!-- Address-Management -->
+                        <div class="collapse" id="address-management">
+                            <div class="box">
+                                <div class="hgroup-title">
+                                    <h3>مدیریت آدرس ها</h3>
+                                </div>
+                                <div class="box-content">
+                                    <div class="address-options address-management">
+                                        <div class="item-address">
+                                            <div class="table-responsive">
+                                                {% for address in addresses %}
+                                                <table class="table table-bordered">
+                                                    <tr>
+                                                        <td class="customer-name" colspan="2">
+                                                            <h6 class="col-md-10">{{address.receiver_name}}</h6>
+                                                            <span class="col-md-2 address-buttons">
+                                                                <a class="delete-address shipping-table-btn" href="/customer/address/{{address.id}}/delete?next=/customer/profile"><i class="fa fa-trash"></i></a>
+                                                                <a class="address-edit shipping-table-btn" href="/customer/address/{{address.id}}/edit?next=/customer/profile"><i class="fa fa-pencil"></i></a>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <span>استان: </span>
+                                                            <span>{{address.state}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span>شهر: </span>
+                                                            <span>{{address.city}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <span>کد پستی: </span>
+                                                            <span>{{address.postal_code}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span>شماره تماس: </span>
+                                                            <span>{{address.call}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <span>آدرس: </span>
+                                                            <span>{{address.address}}</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="buttons">
+                                            <a href="/customer/address/add?next=/customer/profile" class="btn btn-default second-btn">اضافه کردن آدرس جدید</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" id="infoForm">
+                        <form action="/customer/profile/edit" method="post" enctype="multipart/form-data">
+                            <!-- Edit-Info -->
+                            <div class="login">
+                                <div class="box">
+                                    <div class="hgroup-title">
+                                        <h3>ویرایش اطلاعات</h3>
+                                    </div>
+                                    <div class="box-content">
+                                        <div class="row">
+                                            {% if error %}
+                                                <div class="col-sm-12">
+                                                    <p class="alert alert-danger">{{_(error)}}</p>
+                                                </div>
+                                            {% endif %}
+                                            {% if msg %}
+                                                <div class="col-sm-12">
+                                                    <p class="alert alert-success">{{_(msg)}}</p>
+                                                </div>
+                                            {% endif %}
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="name">نام و نام خانوادگی</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="name" type="text" value="{{user.full_name}}" tabindex="1" name="fullname" maxlength="30"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">  
+                                                <div class="form-group">                    
+                                                    <label class="control-label" for="email">پست الکترونیکی</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="email" type="email" value="{{user.email}}" tabindex="2" name="email" disabled />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">  
+                                                <div class="form-group">                    
+                                                    <label class="control-label" for="mobile">تلفن همراه</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="mobile" type="text" value="{{user.cellphone}}" tabindex="3" name="cellphone" disabled />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">  
+                                                <div class="form-group">                    
+                                                    <label class="control-label" for="phone">تلفن</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="phone" type="text" value="{{user.phone}}" tabindex="4" name="phone" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">  
+                                                <div class="form-group">                    
+                                                    <label class="control-label" for="site">سایت</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="site" type="text" value="{{user.website}}" tabindex="5" name="site" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <fieldset class="gender-field">
+                                                    <legend>جنسیت</legend>
+                                                    <div class="col-xs-6">
+                                                        <input id="gender-male" type="radio" name="gender" value="مرد" {% if user.gender == "مرد" %}checked{% endif %} tabindex="6">
+                                                        <label for="gender-male">مرد</label>
+                                                    </div>
+                                                    <div class="col-xs-6">
+                                                        <input id="gender-male" type="radio" name="gender" value="زن" {% if user.gender == "زن" %}checked{% endif %} tabindex="7">
+                                                        <label class="" for="gender-female">زن</label>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <fieldset class="input-title license">
+                                                    <legend>گواهی کسب و کار</legend>
+                                                    <div class="control-group">
+                                                        <input type="file" name="business_license" id="business_license" class="inputfile upload-file" />
+                                                        <label for="business_license">
+                                                            <span></span> 
+                                                            <strong>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                                                                    <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/>
+                                                                </svg> 
+                                                                    انتخاب فایل
+                                                            </strong>
+                                                        </label>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div class="buttons">
+                                                    <button type="submit" class="btn general-btn btn-default">ارسال</button>
+                                                </div>
+                                            </div>
+                                        </div>  
+                                    </div>                    
+                                </div>
+                            </div>
+                            <!-- End class="Edit-Info" -->                                
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <form action="/customer/profile/edit" method="post" enctype="multipart/form-data">
+                            <!-- Change-Password -->
+                            <div class="change-password">
+                                <div class="box">
+                                    <div class="hgroup-title">
+                                        <h3>تغییر رمز عبور</h3>
+                                    </div>
+                                    <div class="box-content">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="password">کلمه عبور</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="password" type="password" name="password" tabindex="8" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">  
+                                                <div class="form-group">                    
+                                                    <label class="control-label" for="password_repeat">تکرار کلمه عبور</label>
+                                                    <div class="controls">
+                                                        <input class="form-control" id="password_repeat" type="password" name="password_repeat" tabindex="9" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                    <div class="buttons">
+                                        <button class="btn btn-primary general-btn btn-default" type="submit">ارسال</button>
+                                        <br>
+                                    </div>                 
+                                </div>
+                            </div>
+                            <!-- End class="change-password" -->
+                        </form>
+                        
+                    </div>
+                      
+                </div>
+            </div>
+        </section>                
+        <!-- Customer-Profile -->            
+    </section>
+    <input type="hidden" id="basket-count" class="hidden" value="{{basket.count}}">
+    <div class="modal fade" id="modal-incompleted" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">تکمیل سفارش</h4>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+            
+                <button type="button" class="btn btn-default" data-dismiss="modal">خالی کردن سبد</button>
+                <button type="button" class="btn btn-default general-btn" data-dismiss="modal">اضافه کردن به سبد</button>
+            </div>
+            </div>
+        </div>
+    </div>
+<!-- End class="main" -->
+
+{% endblock %}
+
+{% block custom_footer %}
+<script src="{{static}}js/order-history.js"></script>
+<script type="text/javascript" src="{{static}}js/customer_profile.js"></script>
+{% endblock %}

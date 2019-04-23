@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{store.name}} | {% endblock %}
+
+{% block content %}
+
+<!-- Content section -->    
+    <section class="main" style="font-family:byekan;">
+        <!-- Contents -->
+        <section class="contents-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="contents">
+                            <div class="box">
+                                <div class="hgroup-title">
+                                    <h3>
+                                        {% if group == "BLOG" %}
+                                            بلاگ
+                                        {% elif group == "NEWS" %}
+                                            اخبار
+                                        {% endif %}
+                                    </h3>
+                                </div>
+                                <div class="box-content">
+                                    <div class="row">
+                                        {% for blog in contents %}
+                                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                            <div class="contents-wrapper">
+                                                <div class="contents-image">
+                                                    {% for img in blog.images |slice:":1" %}
+                                                    <img src="{{img}}" alt="{{blog.title}}">
+                                                    {% endfor %} 
+                                                </div>
+                                                <div class="contents-text">
+                                                    <h4>{{blog.title}}</h4>
+                                                    <p>
+                                                        <i class="fa fa-calendar"></i>
+                                                        <span id="contents-date">{{blog.created_at}}</span>
+                                                    </p>
+                                                    <p class="text-body">{{blog.first_body}}</p>
+                                                </div>
+                                                <div class="more-btn">
+                                                    <a href="/content/view/{{blog.id}}" class="btn btn-default general-btn">ادامه مطلب</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            {% if prev_page == -1 && next_page == -1 %}
+
+                                            {% else %}
+                                            <div class="pagination-box">
+                                                <ul class="pagination text-center">
+                                                    <li {% if prev_page == -1 %} class="disabled" {% endif %}>
+                                                        <a {% if prev_page != -1 %} href="{{first_page}}" {% endif %}>&laquo;</a>
+                                                    </li>
+                                                    <li {% if prev_page == -1 %} class="disabled" {% endif %}>
+                                                        <a {% if prev_page != -1 %} href="{{pagination_previous}}" {% endif %}  aria-label="Previous">
+                                                            <span aria-hidden="true">&lsaquo;</span>
+                                                        </a>
+                                                    </li>
+                                                    {% for pg in pages %}
+                                                    <li {% if pg.number == page %} class="active disabled" {% endif %}>
+                                                        <a class="pg" {% if pg.number != page %} href="{{pg.url}}" {% endif %} id="Page{{pg.number}}">{{pg.number}}</a>
+                                                    </li>
+                                                    {% endfor %}
+                                                    <li {% if next_page == -1 %} class="disabled" {% endif %}>
+                                                        <a {% if next_page != -1 %} href="{{pagination_next}}" {% endif %} aria-label="Next">
+                                                            <span aria-hidden="true">&rsaquo;</span>
+                                                        </a>
+                                                    </li>
+                                                    <li {% if next_page == -1 %} class="disabled" {% endif %}>
+                                                        <a href="{{last_page}}">&raquo;</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                            
+                    </div> 
+                </div>
+            </div>
+        </section>                
+        <!-- End Contents -->            
+    </section>
+<!-- End class="main" -->
+
+{% endblock %}
+{% block custom_footer %}
+<script src="{{static}}vendor/DateConvertor/date-convertor.js"></script> 
+<script>
+    convertDate('#contents-date');
+</script>
+{% endblock %}

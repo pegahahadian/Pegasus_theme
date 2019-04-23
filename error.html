@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{store.name}} | خطا{% endblock %}
+
+{% block content %}
+
+<!-- Content section -->    
+    <section class="main" style="font-family:byekan;">
+        <!-- 404 -->
+        <section class="404">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+                        <div class="box">
+                            <div class="hgroup-title">
+                                <h3><bdi>{{code}} <span>Error</span></bdi></h3>
+                            </div>
+                            <div class="box-content">
+                                <p>{{_(msg)}}</p>
+                            </div>
+                            <div class="buttons">
+                                <a title="← Back home" href="/" class="btn btn-primary general-btn">
+                                    <i class="fa fa-chevron-right"></i> &nbsp; بازگشت به صفحه اصلی
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+            </div>  
+        </section>            
+        <!-- End class="404" -->
+    </section>
+<!-- End class="main" -->
+
+{% endblock %}
+

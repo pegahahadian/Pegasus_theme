@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{store.name}} | پرداخت سفارشات{% endblock %}
+
+{% block content %}
+
+<!-- Content section -->    
+    <section class="main" style="font-family:byekan;">
+        <!-- Payment-Method -->
+        <section class="payment-method">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!-- Payment -->
+                        <div class="peyment" id="checkout-content">
+                            <form method="post">
+                                <div class="box">
+                                    <br>
+                                    <div class="hgroup-title">
+                                        <h3>شیوه پرداخت</h3>
+                                        <h5>شیوه پرداخت را انتخاب کنید.</h5>
+                                    </div>
+                                    <div class="box-content">
+                                        <div class="shipping-methods">
+                                            <div class="row">
+                                                {% if has_discount_code %}
+                                                <div class="col-md-12">
+                                                    <div class="discount-code">
+                                                        <div class="form-group">
+                                                            <label class="control-label" for="discount">کد تخفیف</label>
+                                                            <div class="controls">
+                                                                <input class="form-control" id="discount" value="" name="code" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                {% if store.online_payment %}
+                                                <div class="col-sm-12">
+                                                    <div id="online-payment" class="box highlight">
+                                                        <div class="hgroup-title">
+                                                            <h3>پرداخت آنلاین</h3>
+                                                            <h5>در این روش پرداخت به صورت آنلاین انجام میشود.</h5>
+                                                            <input type="radio" value="2" name="type" id="online" class="pull-right">
+                                                        </div>
+                                                        <div class="box-content highlight clearfix">
+                                                            <label for="online" class="price pull-left">
+                                                            </label>
+                                                     
+                                                        </div>          
+                                                    </div>
+                                                    <div id="show-me">
+                                                        <div class="shipping-methods">
+                                                            <div class="row">
+                                                            {% for webgate in store.available_webgates %}
+                                                                {% if webgate == "mellat" %}
+                                                                <div class="col-md-12">
+                                                                    <div class="box highlight">
+                                                                        <div class="hgroup-title text-align-center">
+                                                                            <img class="bank" src="{{static}}images/mellatlogo.png" alt="mellat">
+                                                                            <span class="bank-name">درگاه ملت</span>
+                                                                        </div>
+                                                                        <div class="box-content highlight clearfix">
+                                                                            <input type="radio" value="{{webgate}}" name="webgate" id="option1" class="pull-right">
+                                                                        </div>          
+                                                                    </div>
+                                                                </div>
+                                                                {% endif %}
+                                                                {% if webgate == "saman" %}
+                                                                <div class="col-md-12">
+                                                                    <div class="box highlight">
+                                                                        <div class="hgroup-title text-align-center">
+                                                                            <img class="bank" src="{{static}}images/samanlogo.png" alt="saman">
+                                                                            <span class="bank-name"></span>
+                                                                            <input type="radio" value="{{webgate}}" name="webgate" id="option1" class="pull-right">
+                                                                        </div>
+                                                                        <div class="box-content highlight clearfix">
+                                                                            
+                                                                        </div>          
+                                                                    </div>
+                                                                </div>
+                                                                {% endif %}
+                                                                {% if webgate == "pasargad" %}
+                                                                <div class="col-md-12">
+                                                                    <div class="box highlight">
+                                                                        <div class="hgroup-title text-align-center">
+                                                                            <img class="bank" src="{{static}}images/pasargadlogo.png" alt="pasargad">
+                                                                            <span class="bank-name">درگاه پاسارگاد</span>
+                                                                        </div>
+                                                                        <div class="box-content highlight clearfix">
+                                                                            <input type="radio" value="{{webgate}}" name="webgate" id="option1" class="pull-right">
+                                                                        </div>          
+                                                                    </div>
+                                                                </div>
+                                                                {% endif %}
+                                                                {% if webgate == "irankish" %}
+                                                                <div class="col-md-12">
+                                                                    <div class="box highlight">
+                                                                        <div class="hgroup-title text-align-center">
+                                                                            <img class="bank" src="{{static}}images/irankish.jpg" alt="irankish">
+                                                                            <span class="bank-name">درگاه ایران کیش</span>
+                                                                        </div>
+                                                                        <div class="box-content highlight clearfix">
+                                                                            <input type="radio" value="{{webgate}}" name="webgate" id="option1" class="pull-right">
+                                                                        </div>          
+                                                                    </div>
+                                                                </div>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                {% if store.payment_coordinated %}
+                                                <div class="col-sm-12">
+                                                    <div id="cash-payment" class="box highlight">
+                                                        <div class="hgroup-title">
+                                                            <h3>پرداخت در محل</h3>
+                                                            <h5>این روش پرداخت در هنگام تحویل محصول مبلغ کل دریافت میشود.</h5>
+                                                            <input type="radio" value="1" name="type"  id="cash" class="pull-right">
+                                                        </div>
+                                                        <div class="box-content highlight clearfix">
+                                                            <label for="cash" class="price pull-left">
+                                                            </label>
+                                                            
+                                                        </div>          
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="buttons">
+                                        <a href="/order/shipping" class="btn btn-primary second-btn">بازگشت </a>
+                                        <button type="submit" class="btn btn-default general-btn">تایید</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- End class="Payment" -->                                
+                    </div> 
+                    <br>
+                    <br>
+                    <div class="col-sm-6">                                    
+                        <div class="cart-details">
+                            <div class="box">
+                                <div class="hgroup-title">
+                                    <h3>مجموع خرید شما: </h3>
+                                    <h5>هزینه ارسال و مالیات در زمان پرداخت بررسی می شود.</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                <div class="col-sm-6">
+                                <ul class="price-list" style="color:#333;">
+                                    <li>مجموع قیمت خام:  <strong>{{ pricing("toman", basket.gross_price, "fa") }}</strong></li>
+                                    <li>مجموع تخفیف:  <strong>{{ pricing("toman", basket.total_discount, "fa") }}</strong></li>
+                                    <li>هزینه ارسال:  <strong>{{ pricing("toman", basket.shipping_price, "fa")}}</strong></li>
+                                    <li>مجموع:  <strong>{{ pricing("toman", basket.total_price, "fa") }}</strong></li>
+                                    <li>مالیات:  <strong>{{store.tax|floatformat}}%</strong></li>
+                                    <li class="important"> مبلغ پرداختی: <strong>{{ pricing("toman", price_payable, "fa") }}</strong></li>
+                                </ul>
+                                <br>
+                            </div>
+                         </div>
+        </section>                
+        <!-- Payment-Method -->            
+    </section>
+<!-- End class="main" -->
+
+{% endblock %}
+
+{% block custom_footer %}
+    <script type="text/javascript" src="{{static}}js/payment.js"></script>
+{% endblock %}  

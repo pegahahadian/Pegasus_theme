@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{store.name}} | سفارشات نا موفق {% endblock %}
+
+{% block content %}
+
+<!-- Content section -->    
+    <section class="main" style="font-family:byekan;">
+        <!-- Unsuccessful -->
+        <section class="unsuccessful">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!-- Unsuccessful-Payment -->
+                        <div class="unsuccessful-payment" id="checkout-content">
+                            <div class="box">
+                                <div class="hgroup-title">
+                                    <h3>پرداخت ناموفق</h3>
+                                    <h5>درصورتیکه طی این فرآیند، مبلغی از حساب شما کسر شده است، طی 72 ساعت آینده، به حساب شما باز خواهد گشت.</h5>
+                                    <h5>یکی از درگاه های زیر را انتخاب کنید.</h5>
+                                </div>
+                                <div class="box-content">
+                                    <div class="row">
+                                        {% if error %}
+                                        <div class="col-sm-12">
+                                            <p class="alert alert-danger"> {{_(error)}} </p>
+                                        </div>
+                                        {% endif %}
+                                        <div class="col-sm-12">
+                                            <ul class="choose-webgate">
+                                                {% for webgate in store.available_webgates %}
+                                                <li>
+                                                    <a href="/order/{{order.id}}/payment/{{webgate}}">
+                                                        {% if webgate == "saman" %}
+                                                            <img src="{{static}}img/saman.png" alt="{{webgate}}">
+                                                        {% endif %}
+                                                        {% if webgate == "mellat" %}
+                                                            <img src="{{static}}img/mellat.png" alt="{{webgate}}">
+                                                        {% endif %}
+                                                        {% if webgate == "parsian" %}
+                                                            <img src="{{static}}img/parsian.png" alt="{{webgate}}">
+                                                        {% endif %}
+                                                    </a>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                            <div class="buttons">
+                                                {% if order.is_on_rest_created %}
+                                                    <a class="btn btn-primary general-btn" href="tazast://{{current_domain}}/status/{{order.status}}">
+                                                        بازگشت به اپلیکیشن
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End class="Unsuccessful-Payment" -->                                
+                    </div> 
+                    <div class="col-sm-6">                                    
+                        <div class="cart-details">
+                            <div class="box">
+                                <div class="hgroup-title">
+                                    <h3>اطلاعات خریدار: </h3>
+                                </div>
+                                <ul class="price-list" style="color:#333;font-size: 8px;">
+                                    <li>به نام:  <span>{{user.full_name}}</span></li>
+                                    <li>آدرس:  <span>{{address.address}}</span></li>
+                                    <li>شماره تلفن:  <span>{{user.phone}}</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="col-sm-6" style="color:#333;">
+                            <div class="box">
+                                <div class="hgroup-title">
+                                    <h3>مجموع خرید شما: </h3>
+                                    <h5 style="color:rgb(0,233,0);" > درخرید بالای ۱۰۰۰۰۰ تومان ارسال رایگان است. </h5>
+                                </div>
+                                <ul class="price-list">
+                                    <li>مجموع تخفیف: <strong>{{ pricing("toman", basket.total_discount, "fa")}}</strong></li>
+                                    <li>هزینه ارسال: <strong>{{ pricing("toman", basket.shipping_price, "fa")}}</strong></li>
+                                    <li class="important">مجموع: <strong>{{ pricing("toman", order.price, "fa")}}</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                   
+             
+        
+        </section>                
+        <!-- Unsuccessful -->            
+    </section>
+<!-- End class="main" -->
+
+{% endblock %}
+
+{% block custom_footer %}
+    <script type="text/javascript" src="{{static}}js/ordering.js"></script>
+{% endblock %}
